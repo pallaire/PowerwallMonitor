@@ -102,7 +102,7 @@ class MainApp(QApplication):
     (address, email, password) = self.get_settings()
     dlg = SettingsDialog(address, email, password)
 
-    if dlg.exec_():
+    if dlg.exec():
       (address, email, password) = dlg.get_settings()
       self.settings.setValue('address', address)
       self.settings.setValue('email', email)
@@ -122,15 +122,7 @@ class MainApp(QApplication):
     # Show alert only once per day
     if self.lastAlertDateTime == None or self.lastAlertDateTime.date() < dt.date():
       self.lastAlertDateTime = dt
-      if platform.system() == 'Darwin':
-        os.system("osascript -e 'display notification \"Your Powerwall is now fully charged\" with title \"Powerwall Monitor\"'")
-      else:
-        dlg = QMessageBox()
-        dlg.setWindowTitle('Powerwall Monitor')
-        dlg.setText('Your Powerwall is now full')
-        dlg.setStandardButtons(QMessageBox.Ok)
-        dlg.setIcon(QMessageBox.Information)
-        button = dlg.exec_()
+      self.tray.showMessage('Powerwall Monitor', 'Your Powerwall is now fully charged', self.icon100, msecs=30000)
 
   def timer_callback(self):
     charge = self.monitor.get_charge()
@@ -159,4 +151,4 @@ class MainApp(QApplication):
 
 
 app = MainApp([])
-app.exec_()
+app.exec()
