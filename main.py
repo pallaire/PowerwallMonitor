@@ -1,5 +1,6 @@
 import os
 import platform
+import sys
 from datetime import datetime
 from PySide6.QtCore import QSettings, QTimer
 from PySide6.QtGui import QAction, QIcon
@@ -44,13 +45,13 @@ class MainApp(QApplication):
     self.lastAlertDateTime = None
 
     # Create the icon
-    self.iconNA = QIcon(os.path.join('res', 'battery-na.png'))
-    self.icon0 = QIcon(os.path.join('res', 'battery-0.png'))
-    self.icon20 = QIcon(os.path.join('res', 'battery-20.png'))
-    self.icon40 = QIcon(os.path.join('res', 'battery-40.png'))
-    self.icon60 = QIcon(os.path.join('res', 'battery-60.png'))
-    self.icon80 = QIcon(os.path.join('res', 'battery-80.png'))
-    self.icon100 = QIcon(os.path.join('res', 'battery-100.png'))
+    self.iconNA = QIcon(os.path.join(self.get_res_path(), 'battery-na.png'))
+    self.icon0 = QIcon(os.path.join(self.get_res_path(), 'battery-0.png'))
+    self.icon20 = QIcon(os.path.join(self.get_res_path(), 'battery-20.png'))
+    self.icon40 = QIcon(os.path.join(self.get_res_path(), 'battery-40.png'))
+    self.icon60 = QIcon(os.path.join(self.get_res_path(), 'battery-60.png'))
+    self.icon80 = QIcon(os.path.join(self.get_res_path(), 'battery-80.png'))
+    self.icon100 = QIcon(os.path.join(self.get_res_path(), 'battery-100.png'))
 
     # Create the tray
     self.tray = QSystemTrayIcon()
@@ -88,6 +89,12 @@ class MainApp(QApplication):
 
     if self.check_settings():
       self.start_monitoring()
+
+  def get_res_path(self):
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+      return os.path.join(sys._MEIPASS, 'res')
+    else:
+      return os.path.join('.', 'res')
 
   def get_settings(self):
     return (self.settings.value('address'), self.settings.value('email'), self.settings.value('password'))
